@@ -312,11 +312,37 @@ class ArsipController extends Controller
                     //inisialisasi nama file_arsip
                     $validateData['file_arsip'] = $namaFile;
                     //dd($file_path);
-    
-                }   
-                 //dd($request->tahun);
-                $arsip->update($validateData);
-                return redirect()->route('arsip.index')->with('success', 'Data berhasil diubah');   
+                    $arsip->update($validateData);
+                    return redirect()->route('arsip.index')->with('success', 'Data berhasil diubah');
+                }else{
+                    if ($request->jenis_id != $arsip->jenis_id || $request->tahun != $arsip->tahun) {
+                        $namaFileOld = $arsip->file_arsip;
+                        $tahunOld = $arsip->tahun;
+                        $jenisOld = $arsip->jenis->name;
+                        $unit = User::with('unit')->find($arsip->user_id)->unit->name;
+
+                        $jenis = Jenis::where('id', $request->jenis_id)->first()->name;
+                        $tahun = $request->tahun;
+            
+                        $file_path_old = public_path()."/upload/$unit/$tahunOld/$jenisOld/$namaFileOld";
+                        $file_path_new = public_path()."/upload/$unit/$tahun/$jenis/$namaFileOld";
+
+                        if (!File::exists($file_path_new)) {
+                            File::makeDirectory("upload/$unit/$tahun/$jenis", 0777, true, true);
+                            File::move($file_path_old, "upload/$unit/$tahun/$jenis/$namaFileOld");
+                        }elseif (File::exists($file_path_new)) {
+                            File::makeDirectory("upload/$unit/$tahun/$jenis", 0777, true);
+                            File::move($file_path_old, "upload/$unit/$tahun/$jenis/$namaFileOld");
+                        }
+
+                        $arsip->update($validateData);
+                        return redirect()->route('arsip.index')->with('success', 'Data berhasil diubah');
+                    }else{
+                       //dd($request->tahun);
+                       $arsip->update($validateData);
+                       return redirect()->route('arsip.index')->with('success', 'Data berhasil diubah');   
+                    }
+                } 
             }
         }
         
