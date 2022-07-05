@@ -16,11 +16,11 @@ class CreateArsipsTable extends Migration
         Schema::create('arsips', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('jenis_arsip_id');
-            $table->string('judul_arsip');
+            // $table->string('judul_arsip');
             $table->string('lokasi_arsip');
             $table->unsignedBigInteger('jenis_id');
-
             $table->string('no_berkas');
+            $table->string('no_box');
             $table->string('tahun');
             $table->string('pencipta_arsip');
             $table->string('uraian_arsip');

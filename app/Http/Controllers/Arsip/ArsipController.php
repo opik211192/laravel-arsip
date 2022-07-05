@@ -32,10 +32,11 @@ class ArsipController extends Controller
     {
         $validateData = $request->validate([
             'jenis_arsip_id' => 'required',
-            'judul_arsip' => 'required',
+            // 'judul_arsip' => 'required',
             'lokasi_arsip' => 'required',
             'jenis_id' => 'required',
             'no_berkas' => 'required',
+            'no_box' => 'required',
             'tahun' => 'required',
             'pencipta_arsip' => 'required',
             'uraian_arsip' => 'required',
@@ -189,10 +190,11 @@ class ArsipController extends Controller
     {
         $validateData = $request->validate([
             'jenis_arsip_id' => 'required',
-            'judul_arsip' => 'required',
+            // 'judul_arsip' => 'required',
             'lokasi_arsip' => 'required',
             'jenis_id' => 'required',
             'no_berkas' => 'required',
+            'no_box' => 'required',
             'tahun' => 'required',
             'pencipta_arsip' => 'required',
             'uraian_arsip' => 'required',
