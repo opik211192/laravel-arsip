@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Arsip;
 
 //use datatables;
-use Yajra\DataTables\DataTables;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\Arsip;
 use App\Models\Jenis;
+use App\Models\JenisArsip;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\JenisArsip;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class ArsipController extends Controller
 {
@@ -237,11 +238,39 @@ class ArsipController extends Controller
                 //inisialisasi nama file_arsip
                 $validateData['file_arsip'] = $namaFile;
                 //dd($file_path);
+                $arsip->update($validateData);
+                return redirect()->route('arsip.index')->with('success', 'Data berhasil diubah');
+            }else {
+                //validasi mempengaruhi folder
+                if ($request->jenis_id != $arsip->jenis_id || $request->tahun != $arsip->tahun) {
+                    //echo "jalankan ini....";
+                    $namaFileOld = $arsip->file_arsip;
+                    $tahunOld = $arsip->tahun;
+                    $jenisOld = $arsip->jenis->name;
+                    $unit = User::with('unit')->find($arsip->user_id)->unit->name;
 
+                    $jenis = Jenis::where('id', $request->jenis_id)->first()->name;
+                    $tahun = $request->tahun;
+    
+                    $file_path_old = public_path()."/upload/$unit/$tahunOld/$jenisOld/$namaFileOld";
+                    $file_path_new = public_path()."/upload/$unit/$tahun/$jenis/$namaFileOld";
+                   
+                    if (!File::exists($file_path_new)) {
+                         File::makeDirectory("upload/$unit/$tahun/$jenis", 0777, true, true);
+                         File::move($file_path_old, "upload/$unit/$tahun/$jenis/$namaFileOld");
+                    }elseif (File::exists($file_path_new)) {
+                        File::makeDirectory("upload/$unit/$tahun/$jenis", 0777, true);
+                         File::move($file_path_old, "upload/$unit/$tahun/$jenis/$namaFileOld");
+                    }
+
+                    $arsip->update($validateData);
+                    return redirect()->route('arsip.index')->with('success', 'Data berhasil diubah');
+                }else{
+                    //dd($request->tahun);
+                   $arsip->update($validateData);
+                   return redirect()->route('arsip.index')->with('success', 'Data berhasil diubah');
+                }
             }   
-             //dd($request->tahun);
-            $arsip->update($validateData);
-            return redirect()->route('arsip.index')->with('success', 'Data berhasil diubah');
             
         }else {
             //keamanan url
