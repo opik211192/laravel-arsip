@@ -24,7 +24,7 @@
     @endif
 
     <div class="card mb-3">
-        <div class="card-header">Assign Permission Sync</div>
+        <div class="card-header text-white mystyle">Assign Permission Sync</div>
             <div class="card-body">
                 <form action="{{ route('assign.edit', $role) }}" method="post">
                     @method('PUT')

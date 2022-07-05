@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="card mb-4">
-        <div class="card-header">Create New Permissions</div>
+        <div class="card-header text-white mystyle">Create New Permissions</div>
             <div class="card-body">
                <form action="{{ route('permissions.create') }}" method="post">
                     @csrf
@@ -20,7 +20,7 @@
     </div>
 
     <div class="card">
-        <div class="card-header">Table Of Permission</div>
+        <div class="card-header text-white mystyle">Table Of Permission</div>
         <div class="card-body">
             <table class="table table-hover">
                 <tr>

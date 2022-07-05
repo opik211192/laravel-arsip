@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Jenis;
+use App\Models\JenisArsip;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\Unit;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -17,55 +20,22 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        $this->call(UnitTableSeeder::class);
+        $this->call(UserTableSeeder::class);
+        $this->call(RoleTableSeeder::class);
+        $this->call(PermissionTableSeeder::class);
+        
+        $this->call(JenisTableSeeder::class);
+        $this->call(JenisArsipTableSeeder::class);
+        $user = User::find(1);
+        $user->assignRole('super admin');
 
-        User::create([
-                'name' => 'Opik',
-                'email' => 'opik@gmail.com',
-                'password' => bcrypt('rahasia123'),
-            ],
-            [
-                'name' => 'fina',
-                'email' => 'fina@gmail.com',
-                'password' => bcrypt('rahasia123'),
-            ],
-            [
-                'name' => 'alna',
-                'email' => 'alna@gmail.com',
-                'password' => bcrypt('rahasia123'),
-            ],
-            [
-                'name' => 'taofik',
-                'email' => 'taofik@gmail.com',
-                'password' => bcrypt('rahasia123'),
-            ]
-        );
+        $user = User::find(2);
+        $user->assignRole('admin');
 
-        Role::create([
-                'name' => 'super admin',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'admin',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'writer',
-                'guard_name' => 'web',
-            ]
-        );
-
-        Permission::create([
-                'name' => 'create arsip',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'show users',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'delete arsip',
-                'guard_name' => 'web',
-            ]
-        );
+        $user = User::find(3);
+        $user->assignRole('writer');
+        
+        
     }
 }

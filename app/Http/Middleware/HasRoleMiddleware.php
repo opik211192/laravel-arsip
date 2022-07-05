@@ -25,7 +25,8 @@ class HasRoleMiddleware
                 abort(403);
             }
         } else {
-            abort(404);
+            return redirect('login');
+            //abort(404);
         }
         
     }

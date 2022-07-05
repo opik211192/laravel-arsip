@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use App\Models\Unit;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends Controller
 {
@@ -29,7 +33,10 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+
+    //disabled route bawaan ketika disimpan
+    //protected $redirectTo = RouteServiceProvider::HOME;
+
 
     /**
      * Create a new controller instance.
@@ -38,7 +45,22 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        //$this->middleware('guest');
+        $this->middleware('auth');
+
+    }
+
+    public function index()
+    {
+        $users = User::all();
+        $units = Unit::all();
+        return view('auth.user', compact('users', 'units'));
+    }
+
+    public function showRegistrationForm()
+    {
+        $units=Unit::all();
+        return view('auth.register', compact('units'));
     }
 
     /**
@@ -53,6 +75,8 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'username' => ['required', 'string', 'min:4', 'max:255' , 'unique:users'],
+            'unit_id' => ['required'], 
         ]);
     }
 
@@ -68,6 +92,98 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'username' => $data['username'],
+            'unit_id' => $data['unit_id'],
         ]);
     }
+
+    //merubah route ketika simpan 
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        // return $this->registered($request, $user)
+        //     ?: redirect($this->redirectPath());
+        return $this->registered($request, $user)
+            ?: redirect('register')->with('pesan', "Data berhasil ditambah");
+    }
+
+    public function edit(User $user)
+    {
+        $units = Unit::all();
+        return view('auth.edit_user', compact('user', 'units'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        request()->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+        ]);
+
+        // $user->update([
+        //     'name' => request('name'),
+        //     'email' => request('email'),
+        // ]);
+        
+        // $data = User::findOrFail($id);
+        // $data->name = request('name');
+        // $data->email = request('email');
+        // $data->save();
+
+        // return redirect()->route('register.index');
+        
+        //ambil password user
+        $hashedPassword = $user->password;
+
+        //validasi jika ganti password
+        if($request->oldpassword){  
+            //validasi cek oassword 
+            if (\Hash::check($request->oldpassword, $hashedPassword)) {
+                if (!Hash::check($request->newpassword, $hashedPassword)) {
+                    // $users = Auth::user()->id;
+                    // $users->password = bcrypt($request->newpassword);
+                    // User::where('id', Auth::user()->id)->update( array(
+                    //     'password' => $users->password
+                    // ));
+                    //simppan perubahan dengan password baru
+                    $user->update([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'unit_id' => $request->unit_id,
+                        'password' => bcrypt($request->newpassword),  
+                    ]);
+                    return redirect()->route('register.index')->with('success', 'Berhasil Ganti password');
+                }
+                else {
+                    //echo "new password can not be the old password!";
+                    return back()->with('error', 'new password can not be the old password!');
+                }
+            }
+            else {
+                //echo "Old Password dosent matched";
+                return back()->with('error', 'Old password doesnt matched');
+            }
+        }else{
+
+            //simpan data tanpa ubah paswword
+            $user->update([
+                'name' => request('name'),
+                'email' => request('email'),
+                'unit_id' => request('unit_id'),
+            ]);
+            //echo "berhasil update tanpa isi password";
+            return redirect()->route('register.index')->with('success', 'Berhasil update data');
+        }
+
+    }
+
+    public function delete(User $user)
+    {
+        $user->delete();
+        return redirect()->route('register.index')->with('pesan', "Hapus $user->nama berhasil");
+    }
+    
 }

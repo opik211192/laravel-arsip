@@ -24,7 +24,7 @@
     @endif
 
     <div class="card mb-3">
-        <div class="card-header">Pick user by email address</div>
+        <div class="card-header text-white" style="background-color: slategray">Pick user by email address</div>
             <div class="card-body">
                 <form action="{{ route('assign.user.create') }}" method="post">
                     @csrf
@@ -54,7 +54,7 @@
     </div>
 
     <div class="card">
-        <div class="card-header">Table of Role & Permission</div>
+        <div class="card-header text-white" style="background-color: slategray">Table of Role & Permission</div>
         <div class="card-body">
             <table class="table table-hover">
                 <tr>

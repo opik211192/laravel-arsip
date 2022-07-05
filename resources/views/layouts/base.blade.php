@@ -9,7 +9,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    
     <!-- Scripts -->
 
     <!-- Fonts -->
@@ -17,7 +17,17 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
+    {{-- <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}"> --}}
+    @yield('adminlte')
+    @yield('styles2')
+
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Styles box dashboard -->
+    <link rel="stylesheet" href="{{ asset('css/box.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/form.css') }}">
+
+    
     @yield('styles')
 </head>
 <body>
@@ -27,6 +37,7 @@
 
 
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
 @stack('scripts')
 <script>
     $(function () {

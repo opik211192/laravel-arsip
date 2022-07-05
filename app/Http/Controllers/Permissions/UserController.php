@@ -21,6 +21,7 @@ class UserController extends Controller
         request()->validate([
             'email' => 'required',
             'roles' => 'required|array',
+            
         ]);
 
         $user = User::where('email', request('email'))->first();

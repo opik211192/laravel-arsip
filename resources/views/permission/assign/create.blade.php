@@ -24,7 +24,7 @@
     @endif
 
     <div class="card mb-3">
-        <div class="card-header">Assign Permission</div>
+        <div class="card-header text-white mystyle">Assign Permission</div>
             <div class="card-body">
                 <form action="{{ route('assign.create') }}" method="post">
                     @csrf
@@ -52,13 +52,13 @@
                             <div class="text-danger mt-2 d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-secondary">Assign</button>
+                    <button type="submit" class="btn btn-dark">Assign</button>
                 </form>
             </div>
     </div>
 
     <div class="card">
-        <div class="card-header">Table of Role & Permission</div>
+        <div class="card-header text-white mystyle">Table of Role & Permission</div>
         <div class="card-body">
             <table class="table table-hover">
                 <tr>
